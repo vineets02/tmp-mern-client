@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: dark; }
+.container-max { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+.pill { @apply rounded-full bg-white/10 border border-white/10 backdrop-blur; }
+.heading-giant { @apply font-display text-5xl sm:text-6xl lg:text-[84px] leading-[1.05]; }
+/* Make a clean video backdrop from a YouTube iframe */
+.yt-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;        /* crop edges */
+  pointer-events: none;    /* no hover/controls UI */
+}
+
+.yt-bg iframe,
+.yt-bg > div {
+  width: 130%;
+  height: 130%;
+  transform: translate(-15%, -8%) scale(1.15);
+}
+
+/* Soft masks to hide any residual overlays at extreme edges */
+.yt-bg::before,
+.yt-bg::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 9%;
+  z-index: 2;
+  pointer-events: none;
+  background: #000;        /* same as page bg */
+}
+.yt-bg::before { top: 0; }
+.yt-bg::after  { bottom: 0; }
+/* ---- Glass + Shine utilities ---- */
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  /* card/container with overflow so the shine can sweep */
+  .shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* one-time sweep on hover / tap */
+  .shine::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent 0%,
+      rgba(255,255,255,0.04) 40%,
+      rgba(255,255,255,0.30) 50%,
+      rgba(255,255,255,0.04) 60%,
+      transparent 100%
+    );
+    transform: translateX(-130%) skewX(-12deg);
+    filter: blur(0.5px);
+  }
+  .animate-shine:hover::after,
+  .animate-shine:focus-visible::after {
+    animation: sheen 1.2s cubic-bezier(.19,1,.22,1);
+  }
+
+  /* slow, ambient sheen that loops (optional) */
+  .ambient-shine::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent 0%,
+      rgba(255,255,255,0.06) 48%,
+      rgba(255,255,255,0.12) 50%,
+      rgba(255,255,255,0.06) 52%,
+      transparent 100%
+    );
+    transform: translateX(-150%) skewX(-10deg);
+    animation: sheen 6.5s linear infinite;
+    opacity: .35;
+  }
+
+  @keyframes sheen {
+    to { transform: translateX(150%) skewX(-10deg); }
+  }
+}
+
